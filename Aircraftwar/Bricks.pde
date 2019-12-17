@@ -1,0 +1,158 @@
+class Bricks{
+	int mode;
+	int exp;
+	int hp;
+	int prize;
+    float x_pos;
+    float y_pos;
+	float endx;
+	float endy;
+	float distX;
+	float distY;
+    float self_vy;
+    float size = 30*width/1000;
+	float step = 0.0001;
+	float pct = 0.0;
+	PImage aircraft;
+    Bricks(int m){
+      mode = m;
+	  
+		switch(mode){
+			//case 0: 顶部随机掉落 lv.1
+			case 0:
+				size = num_balls*size;
+				switch(num_balls){
+					case 1:	
+            size = size*1.5;
+						prize = 100;
+						hp = 2;
+						x_pos = random(1.2*size,width-1.2*size);
+						y_pos = 0;
+						self_vy = 5;
+						aircraft = loadImage("enemy01.png");
+						break;
+					case 2:
+						prize = 200;
+						hp = 8;
+						x_pos = random(1.2*size,width-1.2*size);
+						y_pos = 0;
+						self_vy = 5;
+						aircraft = loadImage("enemy03.png");
+						break;
+					case 3:
+						prize = 300;
+						hp = 20;
+						x_pos = random(1.2*size,width-1.2*size);
+						y_pos = 0;
+						self_vy = 5;
+						aircraft = loadImage("enemy04.png");
+						break;
+					default:
+						prize = 500;
+						hp =40;
+						x_pos = random(1.2*size,width-1.2*size);
+						y_pos = 0;
+						self_vy = 5;
+						aircraft = loadImage("enemy04.png");
+						break;	
+				}
+				break;
+			//case 1&2: 两侧沿对角线进入 
+			case 1:
+				size = 30*width/1000;
+				prize = 300;
+				hp = 1;
+				exp = 1;
+				x_pos = 0;
+				y_pos = 0.17*height;
+				endx = width;
+				endy = height;
+				distX = endx - x_pos;
+				distY = endy - y_pos;	
+				aircraft = loadImage("enemy02.png");
+				break;
+			case 2:
+				size = 30*width/1000;
+				prize = 300;
+				hp = 1;
+				exp = 1;
+				x_pos = width;
+				y_pos = 0.17*height;
+				endx = 0;
+				endy = height;
+				distX = endx - x_pos;
+				distY = endy - y_pos;	
+				aircraft = loadImage("enemy02.png");
+				break;
+			case 3:
+				prize = 500;
+				hp = 5;
+				x_pos = width/3;
+				y_pos = 0;
+				self_vy = 10;
+				aircraft = loadImage("enemy01.png");
+				break;
+			case 4:
+				prize = 500;
+				hp = 5;
+				x_pos = 2*width/3;
+				y_pos = 0;
+				self_vy = 10;
+				aircraft = loadImage("enemy01.png");
+				break;			
+		}
+    }
+    void update(){
+        fill(255);
+        //rectMode(CENTER);
+        //rect(x_pos,y_pos,size,size);
+		imageMode(CENTER);
+		image(aircraft,x_pos,y_pos,size,size);
+        y_pos += self_vy*height/1000 * 0.3;
+    }
+	void exp_update(){
+		switch(mode){
+			case 0:
+				update();
+				break;
+			case 3:
+				update();
+				break;
+			case 4:
+				update();
+				break;
+			case 1:
+				pct += step;
+				if (pct < 1.0) {
+					x_pos += (pct * distX);
+					y_pos += (pow(pct, exp) * distY);
+					imageMode(CENTER);
+					image(aircraft,x_pos,y_pos,size,size);
+				}
+				break;
+			case 2:
+				pct += step;
+				if (pct < 1.0) {
+					x_pos += (pct * distX);
+					y_pos += (pow(pct, exp) * distY);
+					imageMode(CENTER);
+					image(aircraft,x_pos,y_pos,size,size);
+				}
+				break;
+		}
+	}
+	
+	boolean collisionDetect(float x,float y){
+		if (dist(x,y,x_pos,y_pos)<0.6*size){
+			return true;
+		}
+		return false;
+	}
+	
+	boolean acDetect(float x,float y){
+		if (dist(x,y,x_pos,y_pos)<0.5*(size+80*width/height)){
+			return true;
+		}
+		return false;
+	}
+}
